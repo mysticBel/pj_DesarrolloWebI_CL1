@@ -1,0 +1,91 @@
+﻿@model IEnumerable<DesarrolloWebI_CL1_MaribelMaza.Models.Factura>
+
+@{
+    ViewData["Title"] = "GetFacturasPorProducto";
+}
+
+<h1>GetFacturasPorProducto</h1>
+
+<!-- FORMULARIO  nombre es igual al del parametro en el task actionresult-->
+@using (Html.BeginForm())
+{
+    <en>Ingrese el nombre del producto :  </en>
+    @Html.TextBox("nombreProducto", "")
+
+    <button class="btn btn-outline-info"> Buscar </button>
+}
+
+
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.idFactura)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.fechaEmision)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.nombreProducto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.precioUnitario)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.cantidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.monto)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.idFactura)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fechaEmision)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.nombreProducto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.precioUnitario)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.cantidad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.monto)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<!-- PAGINACION -->
+<div>
+    @for (int i = 0; i < ViewBag.numeroPaginas; i++)
+    {
+     @Html.ActionLink(
+    (i + 1 ).ToString(),
+    "GetFacturasPorProducto",
+    "Facturas",
+    new { nombreProducto = ViewBag.nombreProducto , pagina = i },
+    new { @class = "btn btn-primary" }
+    )
+    }
+
+</div>
