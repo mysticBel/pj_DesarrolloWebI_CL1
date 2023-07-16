@@ -11,7 +11,7 @@ namespace DesarrolloWebI_CL1_MaribelMaza.Models
         [Display(Name = "Fecha de Emision")]
         public DateTime fechaEmision { get; set; }
 
-        [Display(Name = "Nombre")]
+        [Display(Name = "Nombre del Producto")]
         public string? nombreProducto { get; set; }
 
         [Display(Name = "Precio Unitario")]
@@ -22,5 +22,11 @@ namespace DesarrolloWebI_CL1_MaribelMaza.Models
 
         [Display(Name = "Monto")]
         public decimal monto { get; set; }
+
+        [Display(Name = "Razon Social")]
+        public string? razonSocial { get; set; }
+        
+        [Display(Name = "Total")]
+        public decimal total { get; set; }
     }
 }

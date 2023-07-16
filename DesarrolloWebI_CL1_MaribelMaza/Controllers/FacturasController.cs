@@ -24,10 +24,12 @@ namespace DesarrolloWebI_CL1_MaribelMaza.Controllers
         }
 
 
-        public IActionResult Index()
+        /*public IActionResult Index()
         {
             return View();
-        }
+        }*/
+
+        // PREGUNTA 1
         IEnumerable<Factura> GetFacturasPorProducto(string nombreProducto)
         {
             List<Factura> facturas = new List<Factura>();
@@ -53,6 +55,7 @@ namespace DesarrolloWebI_CL1_MaribelMaza.Controllers
                         monto= dr.GetDecimal(5),
                     });
                 }
+                connection.Close();
             }
             return facturas;
         }
