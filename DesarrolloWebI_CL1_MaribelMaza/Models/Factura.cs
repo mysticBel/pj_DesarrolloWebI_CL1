@@ -9,6 +9,7 @@ namespace DesarrolloWebI_CL1_MaribelMaza.Models
         public int idFactura{ get; set; }
 
         [Display(Name = "Fecha de Emision")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime fechaEmision { get; set; }
 
         [Display(Name = "Nombre del Producto")]
