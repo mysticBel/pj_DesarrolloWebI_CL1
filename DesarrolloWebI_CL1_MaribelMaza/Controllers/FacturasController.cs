@@ -185,7 +185,7 @@ namespace DesarrolloWebI_CL1_MaribelMaza.Controllers
             );
 
 
-            //REcibiremos un objeto Producto, y preguntamos si no es valido, para registrarlo
+            //REcibiremos un objeto cliente, y preguntamos si no es valido, para registrarlo
             if (!ModelState.IsValid)
             {
                 return View(cliente);
