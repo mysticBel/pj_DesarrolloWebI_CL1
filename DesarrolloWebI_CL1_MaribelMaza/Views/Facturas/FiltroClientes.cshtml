@@ -1,0 +1,84 @@
+﻿@model IEnumerable<DesarrolloWebI_CL1_MaribelMaza.Models.Cliente_Join>
+
+@{
+    ViewData["Title"] = "FiltroClientes";
+}
+
+<h1>Listado de Clientes</h1>
+
+<!-- FORMULARIO  nombre es igual al del parametro en el task actionresult-->
+@using (Html.BeginForm())
+{
+    <en>Ingrese razon social:  </en>
+    @Html.TextBox("razonSocial", "" )
+
+    <button class="btn btn-outline-info"> Buscar </button>
+}
+
+
+<p>
+    <a asp-action="InsertCliente" class="btn btn-info">Nuevo Cliente</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.idCliente)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.razonSocial)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.direccion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.telefono)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.nombreCategoriaCliente)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.idCliente)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.razonSocial)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.direccion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.telefono)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.nombreCategoriaCliente)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<!-- PAGINACION -->
+<div>
+    @for (int i = 0; i < ViewBag.numeroPaginas; i++)
+    {
+    @Html.ActionLink(
+    (i + 1 ).ToString(),
+    "FiltroClientes",
+    "Facturas",
+    new { razonSocial = ViewBag.razonSocial , pagina = i },
+    new { @class = "btn btn-primary" }
+    )
+    }
+
+</div>

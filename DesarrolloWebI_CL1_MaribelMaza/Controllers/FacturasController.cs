@@ -134,5 +134,142 @@ namespace DesarrolloWebI_CL1_MaribelMaza.Controllers
 
         }
 
+
+        // PREGUNTA 3
+        // Traemos la lista de Categoria de Clientes
+        IEnumerable<Categoria_Cliente> GetCategoriasCliente()
+        {
+            List<Categoria_Cliente> categoriasCliente = new List<Categoria_Cliente>();
+
+            using (SqlConnection connection = new SqlConnection(cadena))
+            {
+                SqlCommand command = new SqlCommand("sp_GetCategoriasCliente", connection);
+                command.CommandType = CommandType.StoredProcedure;
+
+                connection.Open();
+                SqlDataReader dr = command.ExecuteReader();
+                while (dr.Read())
+                {
+                    categoriasCliente.Add(new Categoria_Cliente()
+                    {
+                        idCategoriaCliente = dr.GetInt32(0),
+                        nombreCategoria = dr.GetString(1)
+                    });
+                }
+
+            }
+
+            return categoriasCliente;
+        }
+
+        public async Task<IActionResult> InsertCliente()
+        {
+            ViewBag.categoriasCliente = new SelectList(
+                    await Task.Run(() => GetCategoriasCliente()),
+                    "idCategoriaCliente",
+                    "nombreCategoria"
+                );
+
+            return View(new Cliente());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> InsertCliente(Cliente cliente)
+        {
+
+            ViewBag.categoriasCliente = new SelectList(
+                await Task.Run(() => GetCategoriasCliente()),
+                "idCategoriaCliente",
+                "nombreCategoria",
+                cliente.idCategoriaCliente
+            );
+
+
+            //REcibiremos un objeto Producto, y preguntamos si no es valido, para registrarlo
+            if (!ModelState.IsValid)
+            {
+                return View(cliente);
+            }
+
+            //Boton Guardar
+            using (SqlConnection connection = new SqlConnection(cadena))
+            {
+                try
+                {
+                    SqlCommand command = new SqlCommand("sp_InsertCliente", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    //agregamos los parametros del sp
+                    command.Parameters.AddWithValue("@prmstrRazonSocial", cliente.razonSocial); 
+                    command.Parameters.AddWithValue("@prmstrDireccion", cliente.direccion);
+                    command.Parameters.AddWithValue("@prmstrTelefono", cliente.telefono);
+                    command.Parameters.AddWithValue("@prmintIdCategoria", cliente.idCategoriaCliente);
+
+                    connection.Open();
+                  
+                    int filasAfectadas = command.ExecuteNonQuery();
+                    ViewBag.mensaje = $"Se ha insertado {filasAfectadas} cliente.";
+
+
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.mensaje = ex.Message;
+                }
+
+            }
+
+            return View(cliente);
+        }
+
+
+        // vista de Cliente
+        IEnumerable<Cliente_Join> GetClientesPorRazonSocial(string razonSocial)
+        {
+            List<Cliente_Join> clientes = new List<Cliente_Join>();
+
+            using (SqlConnection connection = new SqlConnection(this.cadena))
+            {
+                SqlCommand cmd = new SqlCommand("sp_GetClientesPorRazonSocial", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@prmstrRazonSocial", razonSocial);
+ 
+
+                connection.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                while (dr.Read())
+                {
+                    clientes.Add(new Cliente_Join()
+                    {
+                        idCliente = dr.GetInt32(0),
+                        razonSocial = dr.GetString(1),
+                        direccion = dr.GetString(2),
+                        telefono = dr.GetString(3),
+                        nombreCategoriaCliente = dr.GetString(4)
+                    });
+                }
+            }
+            return clientes;
+        }
+
+        // su ActionRESULT  + PAGINACION
+        public async Task<IActionResult> FiltroClientes(string razonSocial = "", int pagina = 0)
+        {
+            //validacion por si no se envia nada
+            if (razonSocial == null)
+                razonSocial = "";
+
+            IEnumerable<Cliente_Join> clientes = GetClientesPorRazonSocial(razonSocial);
+            int filasPagina = 5;  // indico que tome 5 items por pagina
+            int totalFilas = clientes.Count();
+            int numeroPaginas = totalFilas % filasPagina == 0 ? totalFilas / filasPagina : (totalFilas / filasPagina) + 1;
+
+            ViewBag.pagina = pagina;
+            ViewBag.numeroPaginas = numeroPaginas;
+            ViewBag.razonSocial = razonSocial;
+
+            return View(await Task.Run(() => clientes.Skip(pagina * filasPagina).Take(filasPagina)));
+
+        }
     }
 }
